@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { Book, PlusCircle, Edit, Trash2 } from "lucide-react";
 
 const Books = () => {
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
-    const FetchAllBooks = async () => {
+    const fetchAllBooks = async () => {
       try {
         const res = await axios.get("http://localhost:8800/books");
         setBooks(res.data);
@@ -14,7 +15,7 @@ const Books = () => {
         console.log(err);
       }
     };
-    FetchAllBooks();
+    fetchAllBooks();
   }, []);
 
   const handleDelete = async (id) => {
@@ -25,59 +26,60 @@ const Books = () => {
       console.log(err);
     }
   };
+
   return (
-    <div className="min-h-screen bg-gray-200 p-6">
-      <h1 className="text-4xl font-bold text-center text-blue-600 mb-8">
-        Books Shop
-      </h1>
-      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {books.map((book) => (
-          <div
-            className="bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition duration-200"
-            key={book.id}
+    <div className="min-h-screen bg-gray-100 p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-800 flex items-center">
+            <Book className="mr-2" /> Books Shop
+          </h1>
+          <Link
+            to="/add"
+            className="bg-blue-600 text-white px-4 py-2 rounded-full flex items-center hover:bg-blue-700 transition duration-300"
           >
-            {/* {book.cover && ( */}
-            <img
-              className="w-full h-48 object-cover rounded-t-lg"
-              src="./coverBook.jpg"
-              alt={book.title}
-            />
-            {/* )} */}
-            <div className="mt-4">
-              <h2 className="text-xl font-semibold text-gray-800">
-                {book.title}
-              </h2>
-              <p className="text-gray-600 mt-2">{book.description}</p>
-              <span className="block text-lg font-bold text-green-600 mt-4">
-                ${book.price}
-              </span>
-              <div className="flex space-x-4 mt-2">
-                <button
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
-                  onClick={() => handleDelete(book.id)}
-                >
-                  Delete
-                </button>
-                <button>
-                  <Link
-                    to={`/update/${book.id}`}
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-                  >
-                    Update
-                  </Link>
-                </button>
+            <PlusCircle className="mr-2" /> Add New Book
+          </Link>
+        </div>
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {books.map((book) => (
+            <div
+              key={book.id}
+              className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-300"
+            >
+              <img
+                className="w-full h-48 object-cover"
+                src="./coverBook.jpg"
+                alt={book.title}
+              />
+              <div className="p-6">
+                <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                  {book.title}
+                </h2>
+                <p className="text-gray-600 mb-4">{book.description}</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-2xl font-bold text-blue-600">
+                    ${book.price}
+                  </span>
+                  <div className="flex space-x-2">
+                    <Link
+                      to={`/update/${book.id}`}
+                      className="text-yellow-500 hover:text-yellow-600"
+                    >
+                      <Edit />
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(book.id)}
+                      className="text-red-500 hover:text-red-600"
+                    >
+                      <Trash2 />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
-      <div className="mt-8 text-center">
-        <Link
-          to="/add"
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-700 transition duration-200"
-        >
-          Add New Book
-        </Link>
+          ))}
+        </div>
       </div>
     </div>
   );
